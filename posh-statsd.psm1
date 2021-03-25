@@ -23,7 +23,7 @@ function Send-StatsD {
         # The listening port for StatsD.
         [Double]
         $Port = 8125,
-        
+
         # The message to send.
         [Parameter(Position = 1, Mandatory = $true, ValueFromPipeline = $true)]
         [String]
@@ -48,7 +48,7 @@ function Send-StatsD {
         $buffer = $encoding.GetBytes($Message)
 
         $socket.SendTo($buffer, $endpoint) | Out-Null
-    } 
+    }
 }
 
 function Send-StatsDAll {
@@ -63,7 +63,7 @@ function Send-StatsDAll {
     )
     process {
         $message = "${Stat}:$Value|$Type"
-        
+
         if ($SampleRate -gt 0 -and $SampleRate -lt 1) {
             $message = "$message|@$SampleRate"
         }
@@ -74,7 +74,7 @@ function Send-StatsDAll {
         }
 
         Send-StatsD -Address $Address -Port $Port -Message $message
-    }    
+    }
 }
 
 function Send-StatsDTiming {
@@ -98,24 +98,24 @@ function Send-StatsDTiming {
         # The listening port for StatsD.
         [Double]
         $Port = 8125,
-        
+
         # The name of the metric bucket.
         [Parameter(Position = 1, Mandatory = $true, ValueFromPipeline = $true)]
         [String]
         $Stat,
-        
+
         # The time taken by the operation in milliseconds.
         [Parameter(Position = 2, Mandatory = $true)]
         [Double]
         $Time,
-        
+
         # The percentage from 0-1.0 of the time that are events are being recorded.
         [Double]
         $SampleRate = 1
     )
     process {
-        Send-StatsDAll -Address $Address -Stat $Stat -Value $Time -Type "ms" -SampleRate $SampleRate
-    }    
+        Send-StatsDAll -Address $Address -Port $Port -Stat $Stat -Value $Time -Type "ms" -SampleRate $SampleRate
+    }
 }
 
 function Send-StatsDIncrement {
@@ -139,23 +139,23 @@ function Send-StatsDIncrement {
         # The listening port for StatsD.
         [Double]
         $Port = 8125,
-        
+
         # The name of the metric bucket.
         [Parameter(Position = 1, Mandatory = $true, ValueFromPipeline = $true)]
         [String]
         $Stat,
-        
+
         # The amount to increment the counter.
         [Double]
         $Value = 1,
-        
+
         # The percentage from 0-1.0 of the time that the counter is sampled.
         [Double]
         $SampleRate = 1
     )
     process {
-        Send-StatsDAll -Address $Address -Stat $Stat -Value $Value -Type "c" -SampleRate $SampleRate
-    }    
+        Send-StatsDAll -Address $Address -Port $Port -Stat $Stat -Value $Value -Type "c" -SampleRate $SampleRate
+    }
 }
 
 function Send-StatsDDecrement {
@@ -179,23 +179,23 @@ function Send-StatsDDecrement {
         # The listening port for StatsD.
         [Double]
         $Port = 8125,
-        
+
         # The name of the metric bucket.
         [Parameter(Position = 1, Mandatory = $true, ValueFromPipeline = $true)]
         [String]
         $Stat,
-        
+
         # The amount to decrement the counter.
         [Double]
         $Value = 1,
-        
+
         # The percentage from 0-1.0 of the time that the counter is sampled.
         [Double]
         $SampleRate = 1
     )
     process {
-        Send-StatsDAll -Address $Address -Stat $Stat -Value (-1 * $Value) -Type "c" -SampleRate $SampleRate
-    }    
+        Send-StatsDAll -Address $Address -Port $Port -Stat $Stat -Value (-1 * $Value) -Type "c" -SampleRate $SampleRate
+    }
 }
 
 function Send-StatsDGauge {
@@ -219,28 +219,22 @@ function Send-StatsDGauge {
         # The listening port for StatsD.
         [Double]
         $Port = 8125,
-        
+
         # The name of the metric bucket.
         [Parameter(Position = 1, Mandatory = $true, ValueFromPipeline = $true)]
         [String]
         $Stat,
-        
+
         # The current value of the gauge.
         [Parameter(Position = 2, Mandatory = $true)]
         [Double]
         $Value,
-        
+
         # The percentage from 0-1.0 of the time that the gauge is sampled.
         [Double]
         $SampleRate = 1
     )
     process {
-        Send-StatsDAll -Address $Address -Stat $Stat -Value $Value -Type "g" -SampleRate $SampleRate
-    }    
+        Send-StatsDAll -Address $Address -Port $Port -Stat $Stat -Value $Value -Type "g" -SampleRate $SampleRate
+    }
 }
-
-Export-ModuleMember Send-StatsD
-Export-ModuleMember Send-StatsDTiming
-Export-ModuleMember Send-StatsDIncrement
-Export-ModuleMember Send-StatsDDecrement
-Export-ModuleMember Send-StatsDGauge
