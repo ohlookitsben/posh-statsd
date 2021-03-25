@@ -27,7 +27,7 @@ Author = 'Ben Wiles'
 Copyright = '(c) Ben Wiles. All rights reserved.'
 
 # Description of the functionality provided by this module
-# Description = ''
+Description = 'posh-statsd is a PowerShell module to support pushing metrics to a StatsD. Inspired by node-statsd.'
 
 # Minimum version of the PowerShell engine required by this module
 # PowerShellVersion = ''
@@ -67,8 +67,8 @@ Copyright = '(c) Ben Wiles. All rights reserved.'
 
 # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
 FunctionsToExport = @(
-    'Send-StatsD', 
-    'Send-StatsDTiming', 
+    'Send-StatsD',
+    'Send-StatsDTiming',
     'Send-StatsDIncrement',
     'Send-StatsDDecrement',
     'Send-StatsDGauge'
